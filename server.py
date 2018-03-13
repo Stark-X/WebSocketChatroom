@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from tornado import web, ioloop, log
+from tornado import web, ioloop
 from server.chatroom import ChatRoomHandler
 
 if __name__ == '__main__':

@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
 
-from tornado import websocket
+from tornado import websocket, log
+from tornado.options import OptionParser
+
 from server import store
+import logging
 import json
 
 
 class ChatRoomHandler(websocket.WebSocketHandler):
     name = ""
+    
+    def __init__(self, application, request, **kwargs):
+        super().__init__(application, request, **kwargs)
+        log.enable_pretty_logging()
 
     def check_origin(self, origin):
         # disable check cross-site security
