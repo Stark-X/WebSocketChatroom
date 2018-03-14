@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from tornado import websocket, log
-from tornado.options import OptionParser
-
+from tornado import websocket
 from server import store
 import logging
 import json
@@ -13,20 +11,20 @@ class ChatRoomHandler(websocket.WebSocketHandler):
     
     def __init__(self, application, request, **kwargs):
         super().__init__(application, request, **kwargs)
-        log.enable_pretty_logging()
+        self._general_logger = logging.getLogger()
 
     def check_origin(self, origin):
         # disable check cross-site security
         return True
 
     def open(self):
-        print("WebSocket Opened from %s" % (self.request.remote_ip,))
+        self._general_logger.info("WebSocket Opened from %s" % (self.request.remote_ip,))
 
     def on_message(self, message):
         try:
             package = json.loads(message)
         except ValueError as e:
-            print("Message: %s\nException: %s" % (message, e))
+            self._general_logger.error("Message: %s\nException: %s" % (message, e))
             self.write_message("Invalid json data")
         else:
             self.dispatch(package)
@@ -48,4 +46,4 @@ class ChatRoomHandler(websocket.WebSocketHandler):
             connection.write_message(message)
 
     def on_close(self):
-        print("WebSocket Closed from %s" % (self.request.remote_ip,))
+        self._general_logger.info("WebSocket Closed from %s" % (self.request.remote_ip,))
