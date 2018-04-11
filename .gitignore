@@ -181,3 +181,5 @@ tags
 
 
 # End of https://www.gitignore.io/api/vim,pycharm,python
+
+logs/*.log
