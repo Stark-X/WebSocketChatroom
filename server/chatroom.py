@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from tornado import websocket
-from server import store
+from server import operator
 import logging
 import json
 
@@ -27,23 +27,7 @@ class ChatRoomHandler(websocket.WebSocketHandler):
             self._general_logger.error("Message: %s\nException: %s" % (message, e))
             self.write_message("Invalid json data")
         else:
-            self.dispatch(package)
-
-    def dispatch(self, package):
-        if package["action"] == "add":
-            store.add_to_connection_pool(self)
-            self.name = package["name"]
-            self.write_message("%s join to the chat room" % (self.name,))
-        elif package["action"] == "say":
-            self.broadcast("%s said: %s" % (self.name, package["message"]))
-        elif package["action"] == "close":
-            self.broadcast("%s leave the chat room" % (self.name,))
-            self.close()
-
-    @staticmethod
-    def broadcast(message):
-        for connection in store.get_connections():
-            connection.write_message(message)
+            operator.dispatch(self, package)
 
     def on_close(self):
         self._general_logger.info("WebSocket Closed from %s" % (self.request.remote_ip,))

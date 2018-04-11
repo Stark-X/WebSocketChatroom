@@ -9,3 +9,6 @@ def add_to_connection_pool(connection):
 
 def get_connections():
     return connections
+
+def rm_from_connection_pool(connection):
+    connections.remove(connection)
