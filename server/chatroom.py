@@ -23,9 +23,13 @@ class ChatRoomHandler(websocket.WebSocketHandler):
     def on_message(self, message):
         try:
             package = json.loads(message)
+            operator.validation(package)
         except ValueError as e:
             self._general_logger.error("Message: %s\nException: %s" % (message, e))
             self.write_message("Invalid json data")
+        except Exception as e:
+            self._general_logger.error("Message: %s\nException: %s" % (message, e))
+            self.write_message("Invalid package data")
         else:
             operator.dispatch(self, package)
 
